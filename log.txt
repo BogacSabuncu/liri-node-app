@@ -1,5 +1,51 @@
 What do you want me to do?
+Find a Song
+Enter a song tittle: bloodline
+=========
+*** Found 20 songs with that title ***
+Is it one of these songs you are looking for:            
+=========
+Artist(s): Ariana Grande
+Track: bloodline
+Album: thank u, next
+Listen at Spotify: https://open.spotify.com/track/2hloaUoRonYssMuqLCBLTX
+=========
+Artist(s): Northlane
+Track: Bloodline
+Album: Bloodline
+Listen at Spotify: https://open.spotify.com/track/2MrmBl3qmsA26YPvaiSvmW
+=========
+Artist(s): Muscadine Bloodline
+Track: Porch Swing Angel
+Album: Porch Swing Angel
+Listen at Spotify: https://open.spotify.com/track/50QL2fqn6EDwpBUJ5QaQ4m
+=========
+Artist(s): Ariana Grande
+Track: bloodline
+Album: thank u, next
+Listen at Spotify: https://open.spotify.com/track/2bHfFzMY457XUjTX3eMtsj
+=========
+Artist(s): Slayer
+Track: Bloodline
+Album: God Hates Us All
+Listen at Spotify: https://open.spotify.com/track/2RJba1by26f8314u8IgMta
+=========
+What do you want me to do?
+Find a Movie
+Enter a movie tittle: Mr Nobody
+=========
+Here is the information you are looking for: 
+    Movie Title: Mr. Nobody
+    Year Released: 2009               
+    IMDB Rating: 7.8/10
+    Rotten Tomatoes Rating: 67% 
+    Country: Belgium, Germany, Canada, France, USA, UK
+    Languages: English, Mohawk
+    Plot: A boy stands on a station platform as a train is about to leave. Should he go with his mother or stay with his father? Infinite possibilities arise from this decision. As long as he doesn't choose, anything is possible.
+    Actors: Jared Leto, Sarah Polley, Diane Kruger, Linh Dan Pham
+=========
 Find a Concert
+What do you want me to do?
 Enter an artist: Ariana Grande
 =========
 *** Found 60 concerts for this artist/band ***
