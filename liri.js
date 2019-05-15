@@ -4,8 +4,8 @@ var keys = require("./keys.js");
 const axios = require("axios");
 const moment = require('moment');
 const inquirer = require('inquirer');
-
 var Spotify = require('node-spotify-api');
+var fs = require('fs');
 
 var spotify = new Spotify(keys.spotify);
 
@@ -17,6 +17,13 @@ let songTitle = "bloodline";
 //to not ask another question before being answered
 let isAnswered = false;
 
+let tempLit = ``;
+
+function appendLog(text) {
+    fs.appendFile('log.txt', text, function (err) {
+        if (err) throw err;
+    });
+}
 //funtion to get concert information
 function getConcert(artist) {
 
@@ -29,27 +36,38 @@ function getConcert(artist) {
             //if there are available concerts
             if (response.data.length > 0) {
 
-                console.log(`*** Found ${response.data.length} concerts for this artist/band ***`)
-                console.log("Here are the information for the next 3 concerts for this artist/band ");
-                console.log("=========");
+                tempLit = `=========
+*** Found ${response.data.length} concerts for this artist/band ***
+Here are the information for the next 3 concerts for this artist/band 
+=========`;
 
-                for(let i = 0; i < 3; i++){
+                console.log(tempLit);
+                appendLog(tempLit + "\n");
 
-                let venue = response.data[i].venue;//get the venue information
+                for (let i = 0; i < 3; i++) {
 
-                let time = moment(response.data[i].datetime).format('LLL');//get the time of the venue and format it
-                //display the information
-                
+                    let venue = response.data[i].venue;//get the venue information
 
-                console.log(`   The name of the venue: ${venue.name}`);
-                console.log(`   The venue is at: ${venue.city}, ${venue.country}`);
-                console.log(`   The time of the venue is: ${time}`);
-                console.log("=========");
+                    let time = moment(response.data[i].datetime).format('LLL');//get the time of the venue and format it
+                    //display the information
+
+                    tempLit = `The name of the venue: ${venue.name}
+The venue is at: ${venue.city}, ${venue.country}
+The time of the venue is: ${time}
+=========`;
+
+                    console.log(tempLit);
+                    appendLog(tempLit+"\n");
+
                 }
             }
             else {
                 //if no concerts are found display this
-                console.log("Sorry couldn't find any concerts for this artist!");
+                tempLit = `=========
+Sorry couldn't find any concerts for this artist!
+=========`;
+                console.log(tempLit);
+                appendLog(tempLit+"\n");
             }
             askLiri();
         })
@@ -66,28 +84,34 @@ function getMovie(movieTitle) {
 
             //if there is no movie for that title
             if (response.data.Response === "False") {
-                console.log("Sorry couldn't find any movies with that title!")
+                tempLit = `=========
+Sorry couldn't find any movies with that title!
+=========`;
+                console.log(tempLit);
+                appendLog(tempLit+'\n');
             }
             else {
                 let movie = response.data; //base object for the return value
                 //display the movie information
-                console.log("=========");
-                console.log("Here is the information you are looking for:");
-                console.log(`   Movie Title: ${movie.Title}`);
-                console.log(`   Year Released: ${movie.Year}`);
-                console.log(`   IMDB Rating: ${movie.Ratings[0].Value}`);
-                console.log(`   Rotten Tomatoes Rating: ${movie.Ratings[1].Value}`);
-                console.log(`   Country: ${movie.Country}`);
-                console.log(`   Languages: ${movie.Language}`);
-                console.log(`   Plot: ${movie.Plot}`);
-                console.log(`   Actors: ${movie.Actors}`);
-                console.log("=========");
+                tempLit = `=========
+Here is the information you are looking for: 
+    Movie Title: ${movie.Title}
+    Year Released: ${movie.Year}               
+    IMDB Rating: ${movie.Ratings[0].Value}
+    Rotten Tomatoes Rating: ${movie.Ratings[1].Value} 
+    Country: ${movie.Country}
+    Languages: ${movie.Language}
+    Plot: ${movie.Plot}
+    Actors: ${movie.Actors}
+=========`;
+                console.log(tempLit);
+                appendLog(tempLit+'\n');
             }
 
             askLiri();
         })
         .catch(function (error) {
-            askLiri();
+            console.log(error);
         });
 }
 
@@ -99,15 +123,23 @@ function getSong(songTitle) {
         }
         //if there are no tracks display this message
         if (data.tracks.total === 0) {
-            console.log("Sorry couldn't find any songs with that title!")
+            tempLit = `=========
+Sorry couldn't find any songs with that title!
+=========`;
+
+            console.log(tempLit);
+            appendLog(tempLit+'\n')
         }
         else {
             //How many song have been found
             const songs = data.tracks.items;
-            console.log(`*** Found ${songs.length} songs with that title ***`);
-            console.log(`Is it one of these songs you are looking for: `);
+            tempLit = `=========
+*** Found ${songs.length} songs with that title ***
+Is it one of these songs you are looking for:            
+=========`;
 
-            console.log("=========");
+            console.log(tempLit);
+            appendLog(tempLit+'\n');
 
             //display the first 5 songs
             for (let i = 0; i < 5; i++) {
@@ -118,13 +150,14 @@ function getSong(songTitle) {
                     artists.push(element.name);
                 });
 
-                console.log(`   Artist(s): ${artists.join(", ")}`);
+                tempLit=`Artist(s): ${artists.join(", ")}
+Track: ${songs[i].name}
+Album: ${songs[i].album.name}
+Listen at Spotify: ${songs[i].external_urls.spotify}
+=========`;
 
-                console.log(`   Track: ${songs[i].name}`);
-                console.log(`   Album: ${songs[i].album.name}`);
-                console.log(`   Listen at Spotify: ${songs[i].external_urls.spotify}`);
-
-                console.log("=========");
+                console.log(tempLit);
+                appendLog(tempLit+'\n');
             }
         }
         askLiri();
@@ -151,14 +184,17 @@ function getUsrInput(inputQuestion, category) {
     ]).then(function (answer) {
         //if its a song call getSong function
         if (category == 0) {
+            appendLog(inputQuestion + ": " + answer.usrInput + "\n");
             getSong(answer.usrInput);
         }
         //if its a movie call getMovie function
         else if (category == 1) {
+            appendLog(inputQuestion + ": " + answer.usrInput+ "\n");
             getMovie(answer.usrInput);
         }
         //if its a concert call getConcert function
         else if (category == 2) {
+            appendLog(inputQuestion + ": " + answer.usrInput+ "\n");
             getConcert(answer.usrInput);
         }
         else {
@@ -177,21 +213,30 @@ function askLiri() {
             name: "choice"
         }
     ]).then(function (answer) {
+        appendLog("What do you want me to do?" +"\n");
+
         //invokes the getUsrInput function to get a valid usr input
         if (answer.choice == "Find a Song") {
+            appendLog("Find a Song"+"\n");
             getUsrInput("Enter a song tittle", 0);
         }
         else if (answer.choice == "Find a Movie") {
+            appendLog("Find a Movie"+"\n");
             getUsrInput("Enter a movie tittle", 1);
         }
         else if (answer.choice == "Find a Concert") {
+            appendLog("Find a Concert"+"\n");
             getUsrInput("Enter an artist", 2);
         }
         else {
             console.log("Glad I can help!");
+            appendLog("Glad I can help!"+"\n");
             return 0;
         }
     });
 }
 
+fs.unlink('log.txt', function (err) {
+    if (err) throw err;
+});
 askLiri();
