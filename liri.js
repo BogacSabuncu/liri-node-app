@@ -28,17 +28,24 @@ function getConcert(artist) {
 
             //if there are available concerts
             if (response.data.length > 0) {
-                let venue = response.data[0].venue;//get the venue information
 
-                let time = moment(response.data[0].datetime).format('LLL');//get the time of the venue and format it
-                //display the information
-                console.log("=========");
                 console.log(`*** Found ${response.data.length} concerts for this artist/band ***`)
-                console.log("Information for the next concert for this artist/band is: ");
+                console.log("Here are the information for the next 3 concerts for this artist/band ");
+                console.log("=========");
+
+                for(let i = 0; i < 3; i++){
+
+                let venue = response.data[i].venue;//get the venue information
+
+                let time = moment(response.data[i].datetime).format('LLL');//get the time of the venue and format it
+                //display the information
+                
+
                 console.log(`   The name of the venue: ${venue.name}`);
                 console.log(`   The venue is at: ${venue.city}, ${venue.country}`);
                 console.log(`   The time of the venue is: ${time}`);
                 console.log("=========");
+                }
             }
             else {
                 //if no concerts are found display this
