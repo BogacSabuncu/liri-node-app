@@ -3,7 +3,13 @@ var keys = require("./keys.js");
 const axios = require("axios");
 const moment = require('moment');
 
+var Spotify = require('node-spotify-api');
+
+var spotify = new Spotify(keys.spotify);
+
+
 let artist = "Ariana Grande";
+let movieTitle = "Mr Nobody";
 
 //funtion to get concert information
 function getConcert(artist) {
@@ -47,7 +53,8 @@ function getMovie(movieTitle) {
                 console.log("Sorry couldn't find any movies with that title!")
             }
             else {
-                let movie = response.data;
+                let movie = response.data; //base object for the return value
+                //display the movie information
                 console.log("Here is the information you are looking for:");
                 console.log(`   Movie Title: ${movie.Title}`);
                 console.log(`   Year Released: ${movie.Year}`);
@@ -64,3 +71,41 @@ function getMovie(movieTitle) {
             console.log(error);
         });
 }
+
+function getSong(songTitle) {
+    spotify.search({ type: 'track', query: songTitle }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
+
+        if (data.tracks.total === 0) {
+            console.log("Sorry couldn't find any songs with that title!")
+        }
+        else {
+            const songs = data.tracks.items;
+            console.log(`Found ${songs.length} songs with that title.`);
+            console.log(`Is it one of these songs you are looking for: `);
+
+            console.log("=========");
+
+            for (let i = 0; i < 5; i++) {
+
+                //display the artists
+                let artists = [];
+                songs[i].artists.forEach(element => {
+                    artists.push(element.name);
+                });
+
+                console.log(`   Artist(s): ${artists.join(", ")}`);
+
+                console.log(`   Track: ${songs[i].name}`);
+                console.log(`   Album: ${songs[i].album.name}`);
+                console.log(`   Listen at Spotify: ${songs[i].external_urls.spotify}`);
+
+                console.log("=========");
+            }
+        }
+    });
+}
+
+getMovie(movieTitle);
